@@ -595,33 +595,55 @@ footer .sub{font-size:11.5px; color:#A8A3BE; margin-top:4px;}
   overflow:hidden;
 }
 .group-card-head{
-  display:flex; align-items:center; gap:8px;
-  padding:12px 16px; background:var(--gold-soft);
+  display:flex; align-items:center; gap:10px;
+  padding:13px 16px; background:linear-gradient(135deg, var(--gold-soft) 0%, #FBF7FC 100%);
   border-bottom:1px solid var(--line);
 }
 .group-card-num{
-  display:inline-flex; align-items:center;
+  display:inline-flex; align-items:center; flex-shrink:0;
   background:var(--red); color:#fff;
   font-size:11.5px; font-weight:800;
   padding:3px 10px; border-radius:100px;
 }
-.group-card-room{font-size:12px; font-weight:700; color:#8A5A9A; margin-left:auto;}
+.group-card-room{font-size:12px; font-weight:700; color:var(--gray); flex-shrink:0;}
+.group-card-count{margin-left:auto; font-size:12px; font-weight:700; color:var(--gray); flex-shrink:0;}
+.group-card-meta{margin-left:auto; text-align:right; min-width:0;}
+.group-card-leader-lbl{font-size:9.5px; font-weight:800; color:#B49BC2; letter-spacing:0.03em; text-transform:uppercase;}
+.group-card-leader-name{
+  font-size:12.5px; font-weight:800; color:var(--gold);
+  display:flex; align-items:center; justify-content:flex-end; gap:3px;
+  white-space:nowrap;
+}
 
 .group-member{
   display:flex; align-items:center; justify-content:space-between; gap:10px;
   padding:12px 16px; border-bottom:1px solid var(--line);
+  position:relative;
 }
 .group-member:last-child{border-bottom:none;}
+.group-member.leader{background:linear-gradient(90deg, rgba(176,132,181,0.10) 0%, rgba(176,132,181,0) 65%);}
+.group-member.leader::before{
+  content:""; position:absolute; left:0; top:0; bottom:0; width:3px;
+  background:var(--gold);
+}
 .group-member-main{min-width:0;}
 .group-member-name{font-size:13.5px; font-weight:800; color:var(--ink); word-break:keep-all;}
 .group-member-name .title{font-weight:600; font-size:11.5px; color:var(--gray); margin-left:5px;}
 .group-member-name mark{background:none; color:var(--red); padding:0;}
 .group-member-dept{font-size:11.5px; color:var(--gray); margin-top:2px; word-break:keep-all;}
+.leader-badge{
+  display:inline-flex; align-items:center; gap:2px;
+  background:var(--gold); color:#fff;
+  font-size:9px; font-weight:800;
+  padding:2.5px 7px 2.5px 6px; border-radius:100px;
+  margin-left:6px; vertical-align:middle; white-space:nowrap;
+}
 
-.group-hit-tags{display:flex; gap:6px; flex-shrink:0;}
+.group-hit-tags{display:flex; gap:6px; flex-shrink:0; flex-wrap:wrap; justify-content:flex-end; max-width:120px;}
 .group-hit-tag{font-size:10.5px; font-weight:800; padding:3px 8px; border-radius:100px; white-space:nowrap;}
 .group-hit-tag.g{background:#EAF0FB; color:var(--red);}
 .group-hit-tag.r{background:var(--gold-soft); color:var(--gold);}
+.group-hit-tag.l{background:var(--gold); color:#fff;}
 
 .group-empty{
   text-align:center; padding:44px 20px; color:var(--gray); font-size:13px; line-height:1.6;
@@ -684,6 +706,10 @@ footer .sub{font-size:11.5px; color:#A8A3BE; margin-top:4px;}
     <button class="tab" data-tab="group" onclick="showTab('group')" type="button">
       <svg class="tic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><use href="#i-search"/></svg>
       본인 조 확인
+    </button>
+    <button class="tab" data-tab="dinner" onclick="showTab('dinner')" type="button">
+      <svg class="tic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>
+      석식 테이블
     </button>
   </nav>
 
@@ -1107,7 +1133,7 @@ footer .sub{font-size:11.5px; color:#A8A3BE; margin-top:4px;}
       <div class="section-head">
         <div class="kicker">My Group</div>
         <h2>본인 조 확인</h2>
-        <p>이름을 검색하면 소속 조와 토의장소를 바로 확인할 수 있습니다.</p>
+        <p>이름을 검색하면 소속 조·토의장소·조장을 바로 확인할 수 있습니다.</p>
       </div>
 
       <div class="group-search">
@@ -1124,6 +1150,28 @@ footer .sub{font-size:11.5px; color:#A8A3BE; margin-top:4px;}
   </div>
   <!-- /panel p-group -->
 
+  <div class="panel" id="p-dinner">
+    <div class="section">
+      <div class="section-head">
+        <div class="kicker">Dinner</div>
+        <h2>석식 테이블 안내</h2>
+        <p>이름을 검색하면 만찬 테이블 번호를 바로 확인할 수 있습니다.</p>
+      </div>
+
+      <div class="group-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><use href="#i-search"/></svg>
+        <input id="dinnerSearchInput" type="text" inputmode="search" autocomplete="off" placeholder="이름으로 검색 (예: 홍길동)">
+        <button class="group-search-clear" id="dinnerSearchClear" type="button" aria-label="검색어 지우기" hidden>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div id="dinnerResultInfo" class="group-result-info" hidden></div>
+      <div id="dinnerList" class="group-list"></div>
+    </div>
+  </div>
+  <!-- /panel p-dinner -->
+
   <footer>
     <div class="brand">LG화학 · 생명과학사업본부</div>
     <div class="sub">2026 Leader Workshop</div>
@@ -1133,7 +1181,7 @@ footer .sub{font-size:11.5px; color:#A8A3BE; margin-top:4px;}
 
 <script>
 function showTab(name){
-  ['info','schedule','location','faq','group'].forEach(function(n){
+  ['info','schedule','location','faq','group','dinner'].forEach(function(n){
     var btn = document.querySelector('.tab[data-tab="'+n+'"]');
     var panel = document.getElementById('p-'+n);
     if(btn) btn.classList.toggle('active', n===name);
@@ -1210,7 +1258,8 @@ document.getElementById('addCal').addEventListener('click', function(){
 
 // ---- 본인 조 확인: 참가자 검색 ----
 (function(){
-  var DATA = [["온산공장","이석주","공장장","1조","208호"],["연구개발.기술기획담당","박종훈","부문담당","1조","208호"],["임상개발.임상운영.CSM1팀","고수연","팀장","1조","208호"],["신약.의약화학팀","함영진","팀장","1조","208호"],["경영전략.신사업기획팀","김미나","팀장","1조","208호"],["Primary Care.지방.광주영업1팀","박수원","팀장","1조","208호"],["Primary Care.수도권.북부영업팀","유보성","팀장","1조","208호"],["품질.익산QC팀","김소연","팀장","1조","208호"],["경영전략.Market Access담당","여동호","부문담당","2조","208호"],["임상개발.임상운영.CSM2팀","민지영","팀장","2조","208호"],["LINCS TFT.TI팀","차문용","팀장","2조","208호"],["오송.hGH원제팀","이상윤","팀장","2조","208호"],["Primary Care.지방.광주영업2팀","박중건","팀장","2조","208호"],["Primary Care.수도권.수원영업1팀","송민재","팀장","2조","208호"],["품질.오송QA팀","노승균","팀장","2조","208호"],["신약연구소","김근태","연구소장","2조","208호"],["GQM팀","신혜진","연구위원","3조","208호"],["품질담당","유제영","부문담당","3조","208호"],["임상개발.임상운영.Clinical Excellence팀","허광청","팀장","3조","208호"],["LINCS TFT.타겟연구팀","윤석준","팀장","3조","208호"],["신약.항체연구팀","김희항","팀장","3조","208호"],["오송.내용고형제팀","이재인","팀장","3조","208호"],["경영전략.전략제휴팀","홍기연","전문위원","3조","208호"],["Primary Care.지방.대구영업팀","조영삼","팀장","3조","208호"],["Specialty Care사업부","김성호","사업부장","4조","208호"],["신약.항암백신팀","김승해","팀장","4조","208호"],["연구개발.LINCS TFT","권민철","TFT장","4조","208호"],["임상개발.RA.RA2팀","김연화","팀장","4조","208호"],["오송.물류지원팀","황강열","팀장","4조","208호"],["Primary Care.지방.대전영업팀","이상준","팀장","4조","208호"],["Primary Care.수도권.인천영업1팀","김영윤","팀장","4조","208호"],["사업지원.CP팀","김민술","팀장","4조","208호"],["바이오CMC.aP혼합백신PJT","문수진","PL","5조","208호"],["Primary Care.지방병의원영업담당","강현구","부문담당","5조","208호"],["임상개발.임상운영.DM/STAT팀","신성혜","팀장","5조","208호"],["오송.바이오원제팀","임홍열","팀장","5조","208호"],["Specialty Care.해외.해외영업1팀","김은정","팀장","5조","208호"],["Primary Care.수도권.인천영업2팀","전광해","팀장","5조","208호"],["사업지원.Commercial Excellence","채희진","팀장","5조","208호"],["합성CMC.합성의약공정1팀","김봉찬","연구위원","5조","208호"],["임상개발.임상운영담당","이지윤","부문담당","6조","208호"],["바이오CMC.배양공정팀","김규용","연구위원","6조","208호"],["합성CMC.CMC과제관리팀","김성욱","팀장","6조","208호"],["오송.백신원제팀","김진호","팀장","6조","208호"],["Specialty Care.해외.해외영업2팀","신홍주","팀장","6조","208호"],["Primary Care.지방.부산영업2팀","김태현","팀장","6조","208호"],["Primary Care.수도권.클리닉영업1팀","조덕성","팀장","6조","208호"],["사업지원.구매1팀","성정경","팀장","6조","208호"],["Primary Care.수도권.수원영업2팀","이일권","팀장","7조","208호"],["연구개발부문","소진언","부문장","7조","208호"],["오송공장","현병국","공장장","7조","208호"],["임상개발.RA.RA1팀","박수현","팀장","7조","208호"],["바이오CMC.바이오제형팀","박정은","팀장","7조","208호"],["Primary Care.지방.울산영업팀","김명수","팀장","7조","208호"],["Primary Care.수도권.클리닉영업3팀","정상현","팀장","7조","208호"],["생명과학사업본부","손지웅","사업본부장","8조","401호"],["Specialty Care.마케팅담당","조광훈","부문담당","8조","401호"],["임상개발.임상운영.Clinical Pharmacology팀","윤장수","연구위원","8조","401호"],["바이오CMC.바이오특성분석팀","정영란","팀장","8조","401호"],["합성CMC.합성의약공정2팀","이상대","팀장","8조","401호"],["오송.주사제팀","이성규","팀장","8조","401호"],["Primary Care.지방.전주영업팀","최인선","팀장","8조","401호"],["Primary Care.수도권.클리닉영업4팀","박범대","팀장","8조","401호"],["Primary Care.수도권병의원영업담당","김내우","부문담당","9조","401호"],["임상개발.RA.RA3팀","박홍매","팀장","9조","401호"],["합성CMC.합성의약분석팀","김동민","팀장","9조","401호"],["오송.환경안전팀","박근도","팀장","9조","401호"],["Specialty Care.국내.ART영업1팀","김상희","팀장","9조","401호"],["Primary Care.지방.창원영업팀","이동한","팀장","9조","401호"],["사업지원.유통관리팀","서민우","팀장","9조","401호"],["바이오CMC연구소","정철호","연구소장","9조","401호"],["사업지원담당","김명석","부문담당","10조","404호"],["오송.생산지원팀","반재민","팀장","10조","404호"],["임상개발.RA.RA4팀","김형신","팀장","10조","404호"],["바이오CMC.바이오분석팀","양성모","팀장","10조","404호"],["Specialty Care.국내.ART영업2팀","임성훈","팀장","10조","404호"],["Primary Care.지방.청주영업팀","김용태","팀장","10조","404호"],["Primary Care.마케팅.마케팅2팀","진두호","팀장","10조","404호"],["사업지원.구매2팀","최정주","팀장","11조","404호"],["Primary Care.지방.부산영업1팀","김영균","팀장","11조","404호"],["생명과학.바이오CMC.백신분석팀","성윤희","팀장","11조","404호"],["생명과학.합성CMC.합성의약제형팀","윤덕일","팀장","11조","404호"],["생명과학.생산기술.바이오생산기술팀","왕충일","팀장","11조","404호"],["Primary Care.마케팅.마케팅3팀","한기철","팀장","11조","404호"],["생명과학.경영전략그룹","윤수희","그룹장","11조","404호"],["사업지원.영업지원팀","양현모","팀장","12조","305호"],["Primary Care.마케팅담당","박종빈","부문담당","12조","305호"],["임상개발.Medical Affairs.MI팀","서정연","팀장","12조","305호"],["바이오CMC.원액공정팀","김양현","팀장","12조","305호"],["합성CMC.합성제제기술팀","안재순","팀장","12조","305호"],["Specialty Care.국내.소아내분비영업2팀","임종원","팀장","12조","305호"],["Primary Care.종병.영남종병영업1팀","노승희","팀장","12조","305호"],["경영관리팀","서용진","팀장","12조","305호"],["생산기술담당","김재균","부문담당","13조","305호"],["임상개발.Medical Affairs.PV팀","김민희","팀장","13조","305호"],["바이오CMC.정제공정2팀","금재욱","팀장","13조","305호"],["Specialty Care.국내영업담당","이관수","부문담당","13조","305호"],["Primary Care.종병.영남종병영업2팀","안성목","팀장","13조","305호"],["Primary Care.기획팀","추정훈","팀장","13조","305호"],["HR.HRBP팀","이희정","팀장","13조","305호"],["Bio IP팀","김현임","전문위원","14조","305호"],["임상개발.RA담당","박진호","부문담당","14조","305호"],["바이오CMC.발효공정팀","오종민","팀장","14조","305호"],["Specialty Care.국내.소아내분비영업3팀","정주연","팀장","14조","305호"],["Primary Care사업부","황인철","사업부장","14조","305호"],["익산.바이오원제팀","한승준","팀장","14조","305호"],["생산.생산운영팀","김정민","팀장","14조","305호"],["Primary Care.종병.종병영업1팀","송기백","팀장","14조","305호"],["생명과학.임상개발.Clinical Development P","오빛나","연구위원","15조","201호"],["생산기술.제조혁신팀","이중기","팀장","15조","201호"],["임상개발.Medical Affairs담당","김일수","부문담당","15조","201호"],["신약.ADC연구1팀","김영균","팀장","15조","201호"],["익산.백신HA원제팀","박지훈","팀장","15조","201호"],["Specialty Care.기획팀","천재윤","팀장","15조","201호"],["Primary Care.해외영업담당","최연수","부문담당","15조","201호"],["품질.CQM팀","홍지호","팀장","15조","201호"],["생산그룹","오상현","그룹장","16조","201호"],["경영전략.사업개발담당","원종헌","부문담당","16조","201호"],["임상개발.Development Strategy팀","윤미내","팀장","16조","201호"],["신약.ADC연구2팀","김병규","연구위원","16조","201호"],["익산.생산지원팀","소성광","팀장","16조","201호"],["Specialty Care.신사업기획팀","이호영","팀장","16조","201호"],["Primary Care.종병.종병영업3팀","박창현","팀장","16조","201호"],["품질.R&D QA팀","한혜원","팀장","16조","201호"],["Specialty Care.국내.소아내분비영업1팀","홍종혁","팀장","17조","405호"],["임상개발.Project Management팀","박선애","팀장","17조","405호"],["신약.ADC연구3팀","정샘","팀장","17조","405호"],["사업개발.사업개발1팀","손용훈","팀장","17조","405호"],["Primary Care.종병.종병영업4팀","류경열","팀장","17조","405호"],["품질담당","여현석","전문위원","17조","405호"],["Primary Care.종병영업담당","백동욱","부문담당","17조","405호"],["HR.온산노경팀","박동인","팀장","18조","405호"],["익산공장","주형민","공장장","18조","405호"],["임상개발그룹","김혜진","그룹장","18조","405호"],["신약.CGT연구팀","이지현","팀장","18조","405호"],["사업개발.사업개발2팀","장기범","팀장","18조","405호"],["Primary Care.해외영업.해외사업개발팀","김유정","팀장","18조","405호"],["Primary Care.종병.중부종병영업팀","문정택","팀장","18조","405호"],["품질.오송QC2팀","최호성","팀장","18조","405호"],["HR.익산/오송노경팀","유도현","팀장","19조","303호"],["경영전략.경영전략담당","황달미","부문담당","19조","303호"],["익산.환경안전팀","박창석","팀장","19조","303호"],["기술기획.AX팀","김승하","팀장","19조","303호"],["신약.독성평가팀","이승학","연구위원","19조","303호"],["Primary Care.해외영업.해외영업팀","김성진","팀장","19조","303호"],["Primary Care.종병.호남종병영업팀","정병옥","팀장","19조","303호"],["품질.온산품질팀","최지민","팀장","19조","303호"],["HR.인사팀","양진영","팀장","20조","303호"],["HR담당","신인철","부문담당","20조","303호"],["Primary Care.종병.종병영업2팀","류경우","팀장","20조","303호"],["기술기획.IA팀","정수혁","팀장","20조","303호"],["신약.DMPK팀","박현서","팀장","20조","303호"],["온산.의약화학팀","최광수","팀장","20조","303호"],["경영전략.경영전략팀","김기찬","팀장","20조","303호"],["합성CMC.합성의약분석팀","김영숙","연구위원","20조","303호"],["품질.익산QA팀","장형렬","팀장","20조","303호"],["품질.오송QC3팀","이진우","팀장","21조","303호"],["Primary Care.파인켐사업담당","강재묵","사업담당","21조","303호"],["기술기획.PMO팀","김지원","팀장","21조","303호"],["신약.약리평가팀","박희동","연구위원","21조","303호"],["온산.합성생산기술팀","심형열","팀장","21조","303호"],["경영전략.경영혁신팀","박의철","팀장","21조","303호"],["Primary Care.수도권.강원영업팀","서성길","팀장","21조","303호"],["생명과학제조AX팀","주영주","팀장","21조","303호"]];
+  // [소속, 성명, 직책, 조, 장소, 조장여부(1/0)]
+  var DATA = [["생명과학.온산공장","이석주","공장장","1조","208호",1],["생명과학.HR담당","신인철","부문담당","1조","208호",0],["생명과학.신약.의약화학팀","함영진","팀장","1조","208호",0],["생명과학.경영전략.신사업기획팀","김미나","팀장","1조","208호",0],["Primary Care.지방.광주영업1팀","박수원","팀장","1조","208호",0],["Primary Care.수도권.북부영업팀","유보성","팀장","1조","208호",0],["생명과학.품질.익산QC팀","김소연","팀장","1조","208호",0],["생명과학.경영전략.Market Access담당","여동호","부문담당","2조","208호",1],["생명과학.임상개발.임상운영.CSM2팀","민지영","팀장","2조","208호",0],["생명과학.LINCS TFT.TI팀","차문용","팀장","2조","208호",0],["생명과학.오송.hGH원제팀","이상윤","팀장","2조","208호",0],["Primary Care.지방.광주영업2팀","박중건","팀장","2조","208호",0],["Primary Care.수도권.수원영업1팀","송민재","팀장","2조","208호",0],["생명과학.품질.오송QA팀","노승균","팀장","2조","208호",0],["생명과학.신약연구소","김근태","연구소장","2조","208호",0],["생명과학.품질담당","유제영","부문담당","3조","208호",1],["생명과학.신약.항체연구팀","김희항","팀장","3조","208호",0],["생명과학.오송.내용고형제팀","이재인","팀장","3조","208호",0],["생명과학.경영전략.전략제휴팀","홍기연","전문위원","3조","208호",0],["Primary Care.지방.대구영업팀","조영삼","팀장","3조","208호",0],["생명과학.임상개발.임상운영.CSM1팀","고수연","팀장","3조","208호",0],["Primary Care.수도권.수원영업2팀","이일권","팀장","3조","208호",0],["생명과학.신약.항암백신팀","김승해","팀장","4조","208호",0],["생명과학.연구개발.LINCS TFT","권민철","TFT장","4조","208호",1],["생명과학.임상개발.RA.RA2팀","김연화","팀장","4조","208호",0],["생명과학.오송.백신원제팀","김진호","팀장","4조","208호",0],["Primary Care.지방.대전영업팀","이상준","팀장","4조","208호",0],["Primary Care.수도권.인천영업1팀","김영윤","팀장","4조","208호",0],["생명과학.사업지원.Commercial Excellence","채희진","팀장","4조","208호",0],["생명과학사업본부","손지웅","사업본부장","4조","208호",0],["생명과학.바이오CMC.aP혼합백신PJT","문수진","PL","5조","401호",0],["Primary Care.지방병의원영업담당","강현구","부문담당","5조","401호",1],["생명과학.임상개발.임상운영.DM/STAT팀","신성혜","팀장","5조","401호",0],["생명과학.오송.바이오원제팀","임홍열","팀장","5조","401호",0],["Specialty Care.해외.해외영업1팀","김은정","팀장","5조","401호",0],["Primary Care.수도권.인천영업2팀","전광해","팀장","5조","401호",0],["생명과학.사업지원.CP팀","김민술","팀장","5조","401호",0],["생명과학.합성CMC.합성의약공정1팀","김봉찬","연구위원","5조","401호",0],["생명과학.임상개발.임상운영담당","이지윤","부문담당","6조","401호",1],["생명과학.바이오CMC.배양공정팀","김규용","연구위원","6조","401호",0],["생명과학.합성CMC.CMC과제관리팀","김성욱","팀장","6조","401호",0],["생명과학.오송.물류지원팀","황강열","팀장","6조","401호",0],["Specialty Care.해외.해외영업2팀","신홍주","팀장","6조","401호",0],["Primary Care.지방.부산영업2팀","김태현","팀장","6조","401호",0],["Primary Care.수도권.클리닉영업1팀","조덕성","팀장","6조","401호",0],["생명과학.사업지원.구매1팀","성정경","팀장","6조","401호",0],["생명과학.연구개발부문","소진언","부문장","7조","401호",0],["생명과학.오송공장","현병국","공장장","7조","401호",1],["생명과학.임상개발.RA.RA1팀","박수현","팀장","7조","401호",0],["생명과학.바이오CMC.바이오제형팀","박정은","팀장","7조","401호",0],["Primary Care.지방.울산영업팀","김명수","팀장","7조","401호",0],["Primary Care.수도권.클리닉영업3팀","정상현","팀장","7조","401호",0],["생명과학.사업지원.구매2팀","최정주","팀장","7조","401호",0],["생명과학.합성CMC.합성의약공정2팀","이상대","팀장","7조","401호",0],["생명과학.익산공장","주형민","공장장","8조","404호",1],["생명과학.임상개발그룹","김혜진","그룹장","8조","404호",0],["생명과학.합성CMC.합성의약분석팀","김동민","팀장","8조","404호",0],["생명과학.사업개발.사업개발2팀","장기범","팀장","8조","404호",0],["Primary Care.해외영업.해외사업개발팀","김유정","팀장","8조","404호",0],["Primary Care.종병.중부종병영업팀","문정택","팀장","8조","404호",0],["생명과학.품질.오송QC2팀","최호성","팀장","8조","404호",0],["생명과학.GQM팀","신혜진","연구위원","8조","404호",0],["Primary Care.수도권병의원영업담당","김내우","부문담당","9조","404호",1],["생명과학.임상개발.RA.RA3팀","박홍매","팀장","9조","404호",0],["생명과학.신약.CGT연구팀","이지현","팀장","9조","404호",0],["생명과학.오송.환경안전팀","박근도","팀장","9조","404호",0],["Specialty Care.국내.ART영업1팀","김상희","팀장","9조","404호",0],["Primary Care.지방.창원영업팀","이동한","팀장","9조","404호",0],["생명과학.사업지원.유통관리팀","서민우","팀장","9조","404호",0],["생명과학.바이오CMC연구소","정철호","연구소장","9조","404호",0],["생명과학.사업지원담당","김명석","부문담당","10조","305호",1],["생명과학.임상개발.RA.RA4팀","김형신","팀장","10조","305호",0],["생명과학.바이오CMC.바이오분석팀","양성모","팀장","10조","305호",0],["Specialty Care.국내.ART영업2팀","임성훈","팀장","10조","305호",0],["Primary Care.지방.청주영업팀","김용태","팀장","10조","305호",0],["Primary Care.마케팅.마케팅2팀","진두호","팀장","10조","305호",0],["CTO.Bio IP팀","김현임","팀장","10조","305호",0],["생명과학.경영전략그룹","윤수희","전문위원","10조","305호",0],["Specialty Care.국내영업담당","이관수","부문담당","11조","305호",1],["Primary Care.지방.부산영업1팀","김영균","팀장","11조","305호",0],["생명과학.바이오CMC.백신분석팀","성윤희","팀장","11조","305호",0],["생명과학.합성CMC.합성의약제형팀","윤덕일","팀장","11조","305호",0],["생명과학.생산기술.바이오생산기술팀","왕충일","팀장","11조","305호",0],["Primary Care.마케팅.마케팅3팀","한기철","팀장","11조","305호",0],["생명과학.임상개발.Clinical Development P","오빛나","연구위원","11조","305호",0],["생명과학.경영관리담당","장현석","부문담당","12조","305호",1],["생명과학.익산.환경안전팀","박창석","팀장","12조","305호",0],["생명과학.기술기획.AX팀","김승하","팀장","12조","305호",0],["생명과학.신약.독성평가팀","이승학","연구위원","12조","305호",0],["Primary Care.해외영업.해외영업팀","김성진","팀장","12조","305호",0],["Primary Care.종병.호남종병영업팀","정병옥","팀장","12조","305호",0],["생명과학.품질.온산품질팀","최지민","팀장","12조","305호",0],["Specialty Care사업부","김성호","사업부장","12조","305호",0],["생명과학.생산기술담당","김재균","부문담당","13조","201호",1],["생명과학.임상개발.Medical Affairs.PV팀","김민희","팀장","13조","201호",0],["생명과학.바이오CMC.정제공정2팀","금재욱","팀장","13조","201호",0],["생명과학.경영전략.경영전략담당","황달미","부문담당","13조","201호",0],["Primary Care.종병.영남종병영업2팀","안성목","팀장","13조","201호",0],["Primary Care.기획팀","추정훈","팀장","13조","201호",0],["생명과학.HR.인사팀","양진영","팀장","13조","201호",0],["생명과학.임상개발.RA담당","박진호","부문담당","14조","201호",1],["생명과학.바이오CMC.발효공정팀","오종민","팀장","14조","201호",0],["Specialty Care.국내.소아내분비영업3팀","정주연","팀장","14조","201호",0],["Primary Care사업부","황인철","사업부장","14조","201호",0],["생명과학.익산.바이오원제팀","한승준","팀장","14조","201호",0],["생명과학.생산.생산운영팀","김정민","팀장","14조","201호",0],["Primary Care.종병.종병영업1팀","송기백","팀장","14조","201호",0],["생명과학.HR.온산노경팀","박동인","팀장","14조","201호",0],["생명과학.생산기술.제조혁신팀","이중기","팀장","15조","201호",0],["생명과학.임상개발.Medical Affairs담당","김일수","부문담당","15조","201호",0],["생명과학.신약.ADC연구1팀","김영균","팀장","15조","201호",0],["생명과학.익산.백신HA원제팀","박지훈","팀장","15조","201호",0],["Specialty Care.기획팀","천재윤","팀장","15조","201호",0],["Primary Care.해외영업담당","최연수","부문담당","15조","201호",1],["생명과학.품질.CQM팀","홍지호","팀장","15조","201호",0],["생명과학.HR.익산/오송노경팀","유도현","팀장","15조","201호",0],["생명과학.경영전략.사업개발담당","원종헌","부문담당","16조","405호",1],["생명과학.임상개발.Development Strategy팀","윤미내","팀장","16조","405호",0],["생명과학.신약.ADC연구2팀","김병규","연구위원","16조","405호",0],["생명과학.익산.생산지원팀","소성광","팀장","16조","405호",0],["Specialty Care.신사업기획팀","이호영","팀장","16조","405호",0],["Primary Care.종병.종병영업3팀","박창현","팀장","16조","405호",0],["생명과학.품질.R&D QA팀","한혜원","팀장","16조","405호",0],["Specialty Care.국내.소아내분비영업1팀","홍종혁","팀장","17조","405호",0],["생명과학.임상개발.Project Management팀","박선애","팀장","17조","405호",0],["생명과학.신약.ADC연구3팀","정샘","팀장","17조","405호",0],["생명과학.사업개발.사업개발1팀","손용훈","팀장","17조","405호",0],["Primary Care.종병.종병영업4팀","류경열","팀장","17조","405호",0],["생명과학.품질담당","여현석","전문위원","17조","405호",0],["Primary Care.종병영업담당","백동욱","부문담당","17조","405호",1],["Specialty Care.마케팅담당","조광훈","부문담당","18조","405호",1],["생명과학.임상개발.임상운영.Clinical Pharmacology팀","윤장수","연구위원","18조","405호",0],["생명과학.바이오CMC.바이오특성분석팀","정영란","팀장","18조","405호",0],["생명과학.오송.주사제팀","이성규","팀장","18조","405호",0],["Primary Care.지방.전주영업팀","최인선","팀장","18조","405호",0],["Primary Care.수도권.클리닉영업4팀","박범대","팀장","18조","405호",0],["생명과학.사업지원.영업지원팀","양현모","팀장","18조","405호",0],["Primary Care.마케팅담당","박종빈","부문담당","19조","303호",1],["생명과학.임상개발.Medical Affairs.MI팀","서정연","팀장","19조","303호",0],["생명과학.바이오CMC.원액공정팀","김양현","팀장","19조","303호",0],["생명과학.합성CMC.합성제제기술팀","안재순","팀장","19조","303호",0],["Specialty Care.국내.소아내분비영업2팀","임종원","팀장","19조","303호",0],["Primary Care.종병.영남종병영업1팀","노승희","팀장","19조","303호",0],["생명과학.경영관리팀","서용진","팀장","19조","303호",0],["생명과학.생산그룹","오상현","그룹장","19조","303호",0],["생명과학.연구개발.기술기획담당","박종훈","부문담당","20조","303호",1],["Primary Care.종병.종병영업2팀","류경우","팀장","20조","303호",0],["생명과학.기술기획.IA팀","정수혁","팀장","20조","303호",0],["생명과학.신약.DMPK팀","박현서","팀장","20조","303호",0],["생명과학.온산.의약화학팀","최광수","팀장","20조","303호",0],["생명과학.경영전략.경영전략팀","김기찬","팀장","20조","303호",0],["생명과학.합성CMC.합성의약분석팀","김영숙","연구위원","20조","303호",0],["생명과학.품질.익산QA팀","장형렬","팀장","20조","303호",0],["생명과학.품질.오송QC3팀","이진우","팀장","21조","303호",0],["Primary Care.파인켐사업담당","강재묵","사업담당","21조","303호",1],["생명과학.기술기획.PMO팀","김지원","팀장","21조","303호",0],["생명과학.신약.약리평가팀","박희동","연구위원","21조","303호",0],["생명과학.온산.합성생산기술팀","심형열","팀장","21조","303호",0],["생명과학.경영전략.경영혁신팀","박의철","팀장","21조","303호",0],["Primary Care.수도권.강원영업팀","서성길","팀장","21조","303호",0],["생명과학제조AX팀","주영주","팀장","21조","303호",0]];
   var listEl = document.getElementById('groupList');
   var input = document.getElementById('groupSearchInput');
   var clearBtn = document.getElementById('groupSearchClear');
@@ -1230,11 +1279,22 @@ document.getElementById('addCal').addEventListener('click', function(){
     return esc(name.slice(0,idx)) + '<mark>' + esc(name.slice(idx, idx+q.length)) + '</mark>' + esc(name.slice(idx+q.length));
   }
 
+  function leaderBadge(){
+    return '<span class="leader-badge">👑 조장</span>';
+  }
+
   function memberRow(r, q){
+    var isLeader = r[5] === 1;
     var nameHtml = q ? highlight(r[1], q) : esc(r[1]);
-    var tags = q ? ('<div class="group-hit-tags"><span class="group-hit-tag g">'+esc(r[3])+'</span><span class="group-hit-tag r">'+esc(r[4])+'</span></div>') : '';
-    return '<div class="group-member"><div class="group-member-main">' +
-      '<div class="group-member-name">'+nameHtml+'<span class="title">'+esc(r[2])+'</span></div>' +
+    var badge = isLeader ? leaderBadge() : '';
+    var tags = '';
+    if(q){
+      var tagParts = ['<span class="group-hit-tag g">'+esc(r[3])+'</span>','<span class="group-hit-tag r">'+esc(r[4])+'</span>'];
+      if(isLeader) tagParts.push('<span class="group-hit-tag l">조장</span>');
+      tags = '<div class="group-hit-tags">'+tagParts.join('')+'</div>';
+    }
+    return '<div class="group-member'+(isLeader?' leader':'')+'"><div class="group-member-main">' +
+      '<div class="group-member-name">'+nameHtml+'<span class="title">'+esc(r[2])+'</span>'+badge+'</div>' +
       '<div class="group-member-dept">'+esc(r[0])+'</div>' +
       '</div>'+tags+'</div>';
   }
@@ -1247,11 +1307,14 @@ document.getElementById('addCal').addEventListener('click', function(){
     });
     order.sort(function(a,b){ return parseInt(a,10) - parseInt(b,10); });
     listEl.innerHTML = order.map(function(g){
-      var members = groups[g];
+      var members = groups[g].slice().sort(function(a,b){ return (b[5]-a[5]); });
       var room = members[0][4];
+      var leader = members.filter(function(m){ return m[5]===1; })[0];
       var rows = members.map(function(r){ return memberRow(r, ''); }).join('');
+      var metaHtml = '<div class="group-card-meta"><div class="group-card-leader-lbl">'+esc(room)+' · 조장</div>' +
+        '<div class="group-card-leader-name">👑 '+ (leader ? esc(leader[1]) : '-') +'</div></div>';
       return '<div class="group-card"><div class="group-card-head">' +
-        '<span class="group-card-num">'+esc(g)+'</span><span class="group-card-room">'+esc(room)+'</span>' +
+        '<span class="group-card-num">'+esc(g)+'</span>'+metaHtml+
         '</div>'+rows+'</div>';
     }).join('');
     infoEl.hidden = true;
@@ -1261,6 +1324,84 @@ document.getElementById('addCal').addEventListener('click', function(){
     var matches = DATA.filter(function(r){ return r[1].indexOf(q) !== -1; });
     if(matches.length === 0){
       listEl.innerHTML = '<div class="group-empty">‘'+esc(q)+'’ 이름의 참가자를 찾을 수 없습니다.<br>이름을 다시 확인해 주세요.</div>';
+      infoEl.hidden = true;
+      return;
+    }
+    listEl.innerHTML = '<div class="group-card">' + matches.map(function(r){ return memberRow(r, q); }).join('') + '</div>';
+    infoEl.hidden = false;
+    infoEl.innerHTML = '<b>'+matches.length+'명</b>이 검색되었습니다.';
+  }
+
+  function update(){
+    var q = input.value.trim();
+    clearBtn.hidden = q.length === 0;
+    if(q.length === 0){ renderGrouped(); } else { renderSearch(q); }
+  }
+
+  input.addEventListener('input', update);
+  clearBtn.addEventListener('click', function(){
+    input.value = '';
+    update();
+    input.focus();
+  });
+
+  renderGrouped();
+})();
+
+
+// ---- 석식 테이블: 참가자 검색 ----
+(function(){
+  // [소속, 성명, 직책, 테이블번호]
+  var DATA = [["생명과학.품질.익산QC팀","김소연","팀장","1"],["생명과학.품질.익산QA팀","장형렬","팀장","1"],["생명과학.품질.온산품질팀","최지민","팀장","1"],["생명과학.온산.의약화학팀","최광수","팀장","1"],["생명과학.오송공장","현병국","공장장","1"],["생명과학.오송.환경안전팀","박근도","팀장","1"],["생명과학.오송.물류지원팀","황강열","팀장","1"],["생명과학.품질담당","유제영","담당","2"],["생명과학.품질.R&D QA팀","한혜원","팀장","2"],["생명과학.품질.CQM팀","홍지호","팀장","2"],["생명과학.익산공장","주형민","공장장","2"],["생명과학.익산.환경안전팀","박창석","팀장","2"],["생명과학.익산.백신HA원제팀","박지훈","팀장","2"],["생명과학.오송.바이오원제팀","임홍열","팀장","2"],["생명과학.생산기술.바이오생산기술팀","왕충일","팀장","2"],["생명과학.익산.생산지원팀","소성광","팀장","3"],["생명과학.익산.바이오원제팀","한승준","팀장","3"],["생명과학.온산공장","이석주","공장장","3"],["생명과학.온산.합성생산기술팀","심형열","팀장","3"],["생명과학.오송.백신원제팀","김진호","팀장","3"],["생명과학.오송.hGH원제팀","이상윤","팀장","3"],["생명과학.생산기술.제조혁신팀","이중기","팀장","3"],["생명과학.생산그룹","오상현","그룹장","3"],["생명과학.합성CMC.합성제제기술팀","안재순","팀장","4"],["생명과학.임상개발.임상운영.DM/STAT팀","신성혜","팀장","4"],["생명과학.임상개발.RA.RA2팀","김연화","팀장","4"],["생명과학.임상개발.Medical Affairs담당","김일수","담당","4"],["생명과학.신약.항체연구팀","김희항","팀장","4"],["생명과학.바이오CMC.발효공정팀","오종민","팀장","4"],["생명과학.기술기획.AX팀","김승하","팀장","4"],["생명과학.GQM팀","신혜진","연구위원","4"],["생명과학.품질담당","여현석","전문위원","5"],["생명과학.품질.오송QC3팀","이진우","팀장","5"],["생명과학.품질.오송QC2팀","최호성","팀장","5"],["생명과학.품질.오송QA팀","노승균","팀장","5"],["생명과학.오송.주사제팀","이성규","팀장","5"],["생명과학.오송.내용고형제팀","이재인","팀장","5"],["생명과학.생산기술담당","김재균","담당","5"],["생명과학.생산.생산운영팀","김정민","팀장","5"],["생명과학.임상개발.RA.RA4팀","김형신","팀장","6"],["생명과학.임상개발.Development Strategy팀","윤미내","팀장","6"],["생명과학.연구개발부문","소진언","부문장","6"],["생명과학.신약.DMPK팀","박현서","팀장","6"],["생명과학.신약.ADC연구3팀","정샘","팀장","6"],["생명과학.바이오CMC.백신분석팀","성윤희","팀장","6"],["생명과학.기술기획.PMO팀","김지원","팀장","6"],["CTO.Bio IP팀","김현임","연구위원","6"],["생명과학.합성CMC.합성의약제형팀","윤덕일","팀장","7"],["생명과학.합성CMC.합성의약공정1팀","김봉찬","연구위원","7"],["생명과학.임상개발.임상운영.CSM2팀","민지영","팀장","7"],["생명과학.임상개발.RA.RA1팀","박수현","팀장","7"],["생명과학.연구개발.기술기획담당","박종훈","담당","7"],["생명과학.신약.항암백신팀","김승해","팀장","7"],["생명과학.바이오CMC.바이오특성분석팀","정영란","팀장","7"],["생명과학.LINCS TFT.TI팀","차문용","팀장","7"],["생명과학.합성CMC.합성의약분석팀","김영숙","연구위원","8"],["생명과학.임상개발.임상운영담당","이지윤","담당","8"],["생명과학.임상개발.임상운영.Clinical Pharmacology팀","윤장수","연구위원","8"],["생명과학.임상개발.Medical Affairs.PV팀","김민희","팀장","8"],["생명과학.신약연구소","김근태","연구소장","8"],["생명과학.신약.약리평가팀","박희동","연구위원","8"],["생명과학.바이오CMC.정제공정2팀","금재욱","팀장","8"],["생명과학.바이오CMC.바이오분석팀","양성모","팀장","8"],["생명과학.합성CMC.CMC과제관리팀","김성욱","팀장","9"],["생명과학.임상개발그룹","김혜진","그룹장","9"],["생명과학.임상개발.RA.RA3팀","박홍매","팀장","9"],["생명과학.임상개발.Clinical Development P","오빛나","연구위원","9"],["생명과학.신약.CGT연구팀","이지현","팀장","9"],["생명과학.신약.ADC연구2팀","김병규","연구위원","9"],["생명과학.바이오CMC.배양공정팀","김규용","연구위원","9"],["생명과학.기술기획.IA팀","정수혁","팀장","9"],["생명과학.합성CMC.합성의약분석팀","김동민","팀장","10"],["생명과학.임상개발.임상운영.CSM1팀","고수연","팀장","10"],["생명과학.임상개발.Project Management팀","박선애","팀장","10"],["생명과학.연구개발.LINCS TFT","권민철","TFT장","10"],["생명과학.신약.의약화학팀","함영진","팀장","10"],["생명과학.신약.ADC연구1팀","김영균","팀장","10"],["생명과학.바이오CMC.바이오제형팀","박정은","팀장","10"],["생명과학.합성CMC.합성의약공정2팀","이상대","팀장","11"],["생명과학.임상개발.RA담당","박진호","담당","11"],["생명과학.임상개발.Medical Affairs.MI팀","서정연","팀장","11"],["생명과학.신약.독성평가팀","이승학","연구위원","11"],["생명과학.바이오CMC연구소","정철호","연구소장","11"],["생명과학.바이오CMC.원액공정팀","김양현","팀장","11"],["생명과학.바이오CMC.aP혼합백신PJT","문수진","PL","11"],["생명과학사업본부","손지웅","본부장","12"],["Specialty Care.해외.해외영업1팀","김은정","팀장","12"],["Specialty Care.국내.소아내분비영업1팀","홍종혁","팀장","12"],["Specialty Care.국내.ART영업2팀","임성훈","팀장","12"],["Primary Care.지방.창원영업팀","이동한","팀장","12"],["Primary Care.지방.부산영업1팀","김영균","팀장","12"],["Primary Care.지방.광주영업2팀","박중건","팀장","12"],["Primary Care.종병.종병영업1팀","송기백","팀장","12"],["Primary Care.해외영업담당","최연수","담당","13"],["Primary Care.해외영업.해외영업팀","김성진","팀장","13"],["Primary Care.파인켐사업담당","강재묵","담당","13"],["Primary Care.지방.광주영업1팀","박수원","팀장","13"],["Primary Care.수도권.클리닉영업4팀","박범대","팀장","13"],["Primary Care.수도권.인천영업1팀","김영윤","팀장","13"],["Primary Care.마케팅담당","박종빈","담당","13"],["Primary Care.마케팅.마케팅2팀","진두호","팀장","13"],["Specialty Care사업부","김성호","사업부장","14"],["Specialty Care.해외.해외영업2팀","신홍주","팀장","14"],["Specialty Care.신사업기획팀","이호영","팀장","14"],["Specialty Care.마케팅담당","조광훈","담당","14"],["Specialty Care.기획팀","천재윤","팀장","14"],["Specialty Care.국내영업담당","이관수","담당","14"],["Specialty Care.국내.소아내분비영업3팀","정주연","팀장","14"],["Specialty Care.국내.소아내분비영업2팀","임종원","팀장","14"],["Specialty Care.국내.ART영업1팀","김상희","팀장","14"],["Primary Care사업부","황인철","사업부장","15"],["Primary Care.지방.전주영업팀","최인선","팀장","15"],["Primary Care.지방.대구영업팀","조영삼","팀장","15"],["Primary Care.종병.종병영업4팀","류경열","팀장","15"],["Primary Care.종병.종병영업3팀","박창현","팀장","15"],["Primary Care.종병.영남종병영업1팀","노승희","팀장","15"],["Primary Care.수도권.인천영업2팀","전광해","팀장","15"],["Primary Care.마케팅.마케팅3팀","한기철","팀장","15"],["Primary Care.해외영업.해외사업개발팀","김유정","팀장","16"],["Primary Care.지방.울산영업팀","김명수","팀장","16"],["Primary Care.지방.부산영업2팀","김태현","팀장","16"],["Primary Care.종병.호남종병영업팀","정병옥","팀장","16"],["Primary Care.종병.종병영업2팀","류경우","팀장","16"],["Primary Care.수도권병의원영업담당","김내우","담당","16"],["Primary Care.수도권.클리닉영업3팀","정상현","팀장","16"],["Primary Care.수도권.수원영업1팀","송민재","팀장","16"],["Primary Care.기획팀","추정훈","팀장","16"],["Primary Care.지방병의원영업담당","강현구","담당","17"],["Primary Care.지방.청주영업팀","김용태","팀장","17"],["Primary Care.지방.대전영업팀","이상준","팀장","17"],["Primary Care.종병영업담당","백동욱","담당","17"],["Primary Care.종병.중부종병영업팀","문정택","팀장","17"],["Primary Care.종병.영남종병영업2팀","안성목","팀장","17"],["Primary Care.수도권.클리닉영업1팀","조덕성","팀장","17"],["Primary Care.수도권.강원영업팀","서성길","팀장","17"],["생명과학제조AX팀","주영주","팀장","18"],["생명과학.사업개발.사업개발2팀","장기범","팀장","18"],["생명과학.경영전략그룹","윤수희","그룹장","18"],["생명과학.경영전략.신사업기획팀","김미나","팀장","18"],["생명과학.경영전략.사업개발담당","원종헌","담당","18"],["생명과학.경영전략.경영전략팀","김기찬","팀장","18"],["생명과학.HR담당","신인철","담당","18"],["생명과학.HR.온산노경팀","박동인","팀장","18"],["생명과학.HR.HRBP팀","이희정","팀장","18"],["생명과학.사업지원담당","김명석","담당","19"],["생명과학.사업지원.유통관리팀","서민우","팀장","19"],["생명과학.사업지원.영업지원팀","양현모","팀장","19"],["생명과학.사업지원.구매2팀","최정주","팀장","19"],["생명과학.사업지원.구매1팀","성정경","팀장","19"],["생명과학.사업지원.CP팀","김민술","팀장","19"],["생명과학.사업지원.Commercial Excellence","채희진","팀장","19"],["생명과학.사업개발.사업개발1팀","손용훈","팀장","20"],["생명과학.경영전략.전략제휴팀","홍기연","전문위원","20"],["생명과학.경영전략.경영혁신팀","박의철","팀장","20"],["생명과학.경영전략.경영전략담당","황달미","담당","20"],["생명과학.경영전략.Market Access담당","여동호","담당","20"],["생명과학.경영관리팀","서용진","팀장","20"],["생명과학.경영관리담당","장현석","담당","20"],["생명과학.HR.인사팀","양진영","팀장","20"],["생명과학.HR.익산/오송노경팀","유도현","팀장","20"]];
+  var listEl = document.getElementById('dinnerList');
+  var input = document.getElementById('dinnerSearchInput');
+  var clearBtn = document.getElementById('dinnerSearchClear');
+  var infoEl = document.getElementById('dinnerResultInfo');
+  if(!listEl || !input) return;
+
+  function esc(s){
+    return String(s).replace(/[&<>"']/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+
+  function highlight(name, q){
+    if(!q) return esc(name);
+    var idx = name.indexOf(q);
+    if(idx === -1) return esc(name);
+    return esc(name.slice(0,idx)) + '<mark>' + esc(name.slice(idx, idx+q.length)) + '</mark>' + esc(name.slice(idx+q.length));
+  }
+
+  function memberRow(r, q){
+    var nameHtml = q ? highlight(r[1], q) : esc(r[1]);
+    var tags = q ? ('<div class="group-hit-tags"><span class="group-hit-tag g">'+esc(r[3])+'번 테이블</span></div>') : '';
+    return '<div class="group-member"><div class="group-member-main">' +
+      '<div class="group-member-name">'+nameHtml+'<span class="title">'+esc(r[2])+'</span></div>' +
+      '<div class="group-member-dept">'+esc(r[0])+'</div>' +
+      '</div>'+tags+'</div>';
+  }
+
+  function renderGrouped(){
+    var tables = {}; var order = [];
+    DATA.forEach(function(r){
+      if(!tables[r[3]]){ tables[r[3]] = []; order.push(r[3]); }
+      tables[r[3]].push(r);
+    });
+    order.sort(function(a,b){ return parseInt(a,10) - parseInt(b,10); });
+    listEl.innerHTML = order.map(function(t){
+      var members = tables[t];
+      var rows = members.map(function(r){ return memberRow(r, ''); }).join('');
+      return '<div class="group-card"><div class="group-card-head">' +
+        '<span class="group-card-num">'+esc(t)+'번 테이블</span><span class="group-card-count">'+members.length+'명</span>' +
+        '</div>'+rows+'</div>';
+    }).join('');
+    infoEl.hidden = true;
+  }
+
+  function renderSearch(q){
+    var matches = DATA.filter(function(r){ return r[1].indexOf(q) !== -1; });
+    if(matches.length === 0){
+      listEl.innerHTML = '<div class="group-empty">\u2018'+esc(q)+'\u2019 이름의 참가자를 찾을 수 없습니다.<br>이름을 다시 확인해 주세요.</div>';
       infoEl.hidden = true;
       return;
     }
